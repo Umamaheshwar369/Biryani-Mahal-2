@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Biryani Mahal Login</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            @font-face {
+                font-family: 'MyCustomFont';
+                src: url('assets/fonts/Dhurjati-Regular.woff2') format('woff2');
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+            }
+
+            @font-face {
+                font-family: 'MyCustomFont1';
+                src: url('assets/fonts/NotoSerifDisplay-Bold.woff2') format('woff2');
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+            }
+
+            html,body{
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+                background: #fcdcac;
+                font-family: 'MyCustomFont1', sans-serif;
+            }
+
+            .dhurjati-regular {
+                font-family: "MyCustomFont", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+            }
+
+            header {
+                font-family: "MyCustomFont", sans-serif;
+                font-size: 30px;
+                letter-spacing: 6px;
+                font-weight: bold;
+                background: #F2A900;
+                color: #8A0000;
+                text-align: center;
+                padding: 20px;
+            }
+
+            nav {
+                background: #FFCB56;
+                padding: 15px;
+                text-align: center;
+            }
+
+            nav a {
+                color: #8A0000;
+                text-decoration: none;
+                margin: 15px;
+                font-weight: bold;
+                transition: 0.5s;
+            }
+
+            nav a:hover {
+                transform: scale(1.1);
+                color: #fcdcac;
+            }
+
+            section { 
+                width: 85%;
+                padding: 0;
+                max-width: 400px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                margin: auto;
+                margin-top: 50px;
+                margin-bottom: 50px;
+                background: #F2A900;
+                padding: 25px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px #F2A900;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                padding: 10px 12px;
+                margin-bottom: 15px;          
+                border: none;
+                border-radius: 6px;
+                background-color: #ffffff;
+                font-size: 14px;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+
+            /* Container styling */
+            .select-container {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                max-width: 350px;
+                margin-bottom: 20px;
+            }
+
+            /* Label styling */
+            .select-container label {
+                font-size: 14px;
+                font-weight: 600;
+                color: #e2e8f0; 
+            }
+
+            .select-container select {
+                width: 350px;
+                align-items: center;
+                padding: 12px 16px;
+                font-size: 15px;
+                color: gray;
+                background-color: #ffffff; /* Dark background matching dashboard UIs like Supabase */
+                border: none;
+                border-radius: 8px;
+                outline: none;
+                cursor: pointer;
+                appearance: none; /* Removes default browser arrow */
+                -webkit-appearance: none;
+                -moz-appearance: none;
+  
+                /* Custom Arrow Icon */
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right 14px center;
+                background-size: 16px;
+  
+                transition: border-color 0.2s, box-shadow 0.2s;
+            }
+
+            .select-container select:hover {
+                border-color: #fcdcac;
+            }
+
+            /* Focus/Active effect */
+            .select-container select:focus {
+                border-color: #FFCB56;
+                box-shadow: 0 0 0 3px rgba(255,255,255,2px);
+            }
+
+            /* Styling options inside the dropdown */
+            .select-container select option {
+                background-color: #F2A900;
+                color: #ffffff;
+                padding: 10px;
+            }
+
+            .checkbox-container {
+                width: 100%;
+                margin-bottom: 10px;
+                text-align: middle;
+            }
+
+            button {
+                width: 100%;
+                padding: 12px;
+                border-radius: 6px;
+                background-color: #8A0000;
+                color: white;
+                border: none;
+                cursor: pointer;
+                letter-spacing: 2px;
+                font-size: 15px;
+                font-weight: bold;
+                transition: 0.5s;
+                margin-top: 5px;
+                margin-bottom: 10px;
+            }
+
+            button:hover {
+                transform: scale(1.02);
+                background-color: #A52A2A;
+            }
+
+            button:active {
+                transform: scale(0.95);
+                background-color: #8A0000;
+            }
+
+            input[type="checkbox"] {
+                vertical-align: middle;
+                transform: scale(1.3);
+                margin-right: 8px;
+                cursor: pointer;
+                accent-color: #8A0000;
+            }
+
+            label {
+                display: inline-block;
+                cursor: pointer;
+                font-weight: bold;
+                color: #8A0000;
+            }
+
+            #message {
+                margin-top: 15px;
+                font-weight: bold;
+                text-align: center;
+                color: #2A1A0E;
+                line-height: 1.5;
+            }
+
+            .main-content, section:not(footer) {
+                flex: 1;
+            }
+
+            .footer{
+                background:#2A1A0E;
+                color:white;
+                text-align:center;
+                padding:20px 0;
+                width:100%;
+                margin-top:auto;
+                cursor:pointer;
+            }
+        </style>
+    </head>
+    <body>
+
+        <header>
+            <h1>బిర్యానీ మహల్</h1>
+            <p>Login to Place Your Order</p>
+        </header>
+
+        <nav>
+            <a> Telangana HYD | Spicy & Fresh | Modern Service </a>
+        </nav>
+
+        <section>
+            <input type="text" id="username" placeholder="Username">
+            <div class="select-container">
+                <label for="table_no"></label>
+                <select type="int" name="table_no" id="table_no" required>
+                    <option value="" disabled selected>-- Choose a Table --</option>
+                    <option value="1">Table 1</option>
+                    <option value="2">Table 2</option>
+                    <option value="3">Table 3</option>
+                    <option value="4">Table 4</option>
+                    <option value="5">Table 5</option>
+                    <option value="6">Table 6</option>
+                    <option value="7">Table 7</option>
+                    <option value="8">Table 8</option>
+                    <option value="9">Table 9</option>
+                    <option value="10">Table 10</option>
+                    <option value="11">Table 11</option>
+                    <option value="12">Table 12</option>
+                    <option value="13">Table 13</option>
+                    <option value="14">Table 14</option>
+                    <option value="15">Table 15</option>
+                    <!-- Add as many tables as you have -->
+                </select>
+            </div>
+            <input type="text" id="secret" placeholder="Phone No.">
+            
+            <div class="checkbox-container">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="order-type" value="Dine-In"> Dine-In 
+                </label>
+                <br><br>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="order-type" value="TakeAway"> TakeAway 
+                </label>
+            </div>
+
+            <button type="button" id="submitbutton">Submit</button>
+            <p id="message"></p>
+        </section>
+
+        <footer class="footer">
+            <div class="footer1">
+                © 2026 Biryani Mahal | All Rights Reserved
+            </div>
+        </footer>
+
+        <script>
+            document.getElementById("submitbutton").addEventListener("click", function () {
+            const user = document.getElementById("username").value.trim();
+            const table_no = document.getElementById("table_no").value.trim();
+            const phone = document.getElementById("phone_no") ? document.getElementById("phone_no").value.trim() : document.getElementById("secret").value.trim(); // Grab phone number input
+            const secret = document.getElementById("secret").value.trim();
+            const message = document.getElementById("message");
+
+            const selectedOptions = [];
+            const checkboxes = document.querySelectorAll('input[name="order-type"]:checked');
+            checkboxes.forEach(cb => selectedOptions.push(cb.value));
+
+            // Secret Admin Login
+            if (user === "money") {
+                if (secret === "admin") {
+                    window.location.href = "Admin.html";
+                }
+                else {
+                    message.textContent = "Incorrect password!";
+                }
+            } 
+            // Regular Customer Login
+            else {
+                if (!user || !table_no || !secret) {
+                    message.textContent = "Please fill in all text fields.";
+                    return;
+                }
+
+                if (selectedOptions.length === 0) {
+                    message.textContent = "Please select at least one order type.";
+                    return;
+                }
+
+                // Package customer info to transfer to menu page
+                const customerInfo = {
+                    username: user,
+                    table_no: table_no,
+                    phone_no: secret,
+                    order_type: selectedOptions.join(" & ")
+                };
+
+                // Save to browser localStorage so the menu page can read it
+                sessionStorage.setItem("customerInfo", JSON.stringify(customerInfo));
+
+                message.textContent = "Success! Redirecting to menu...";
+                setTimeout(() => {
+                    window.location.href = "Menu.html";
+                }, 1000);
+            }
+        });
+</script>
+    </body>
+</html>

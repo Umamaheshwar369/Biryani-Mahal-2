@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Biryani Mahal </title>
+    </head>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        @font-face {
+            font-family: 'MyCustomFont';
+            src: url('assets/fonts/Dhurjati-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'MyCustomFont1';
+            src: url('assets/fonts/NotoSerifDisplay-Bold.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body{
+            background:#fcdcac;
+            color:#000000;
+            font-family: "MyCustomFont1", serif; 
+        }
+
+        header{
+            font-family: "MyCustomFont", sans-serif;
+            font-size: 30px;
+            letter-spacing: 4px;
+            font-weight: bold;
+            background:#F2A900;
+            color:#8A0000;
+            text-align:center;
+            padding:20px;
+        }
+
+        nav{
+            background:#FFCB56;
+            padding:15px;
+            text-align:center;
+        }
+
+        nav a{
+            color:#8A0000;
+            text-decoration:none;
+            margin:15px;
+            font-weight:bold;
+            transition:0.5s;
+        }
+
+        nav a:hover{
+           transform:scale(1.05);
+           color:#fcdcac;
+        }
+
+        .hero {
+            width: 100%;
+            min-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+            background-image: url("photos/unsplash.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            color: #fcdcac;
+            text-shadow: 2px 2px 6px black;
+            font-size: 40px;
+            font-weight: bold;
+
+            transition: 0.5s;
+        }
+
+        .hero:hover {
+            transform: scale(1.05);
+        }
+
+        .hero:active{
+            transform: scale(1.025);
+        }
+
+        .hero-content {
+            text-shadow: #333 1px 1px 2px;
+            padding: 30px 40px;
+            border-radius: 15px;
+        }
+
+        .hero-content p {
+            font-size: 22px;
+            font-weight: normal;
+            margin-top: 10px;
+        }
+
+        section{
+            width:85%;
+            height:10%;
+            margin: auto;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            background:#F2A900;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 0 10px gray;
+
+
+            transition: 0.5s;
+        }
+
+        section:hover{
+            transform:scale(1.05);
+        }
+
+        section:active{
+            transform:scale(1.025);
+        }
+
+        .services{
+            background:#8A0000;
+            margin-right:20px;
+            color:#fcdcac;
+            padding:10px 20px;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+            margin:5px;
+
+            transition:0.5s;
+        }
+
+        .services:hover{
+            transform:scale(1.1);
+            background:#A52A2A;
+            color:#FFFFFF;
+        }
+
+        .services:active{
+            transform:scale(0.9);
+            background:#8A0000;
+            color:#FFFFFF;
+        }
+
+        #services a {
+            text-decoration: none;
+        }
+
+        h2{
+            color:#8A0000;
+            margin-bottom:15px;
+        }
+
+        h4{
+            color:#8A0000;
+            margin-bottom:15px;
+        }
+
+        .brand-logo1{
+            padding:0;
+            border:none;
+            overflow:hidden;
+            border-radius: 8px;
+            background: none;
+            display: block;
+            width:120px;
+            height:40px;
+        }
+
+        .brand-logo2{
+            padding:0;
+            border:none;
+            overflow:hidden;
+            border-radius: 8px;
+            background: none;
+            display: block;
+            width:120px;
+            height:40px;
+
+        }
+
+
+        .footer{
+            position:relative;
+            background:#2A1A0E;
+            color:white;
+            text-align:center;
+            padding:20px;
+            margin-top:30px;
+            display:flex;
+            cursor:pointer;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; 
+            left: 50%;
+            margin-left: -100px; 
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .footer:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+    <body>
+
+        <header>
+            <h1>🍽 బిర్యానీ మహల్ 🍽</h1>
+            <p> Telangana HYD | Spicy & Fresh | Modern Service</p>
+        </header>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>Welcome to Biryani Mahal</h1>
+                <p>Authentic Telangana Taste, Served Fresh</p>
+            </div>
+        </section>
+
+
+        <section id="about">
+            <h2>About Us</h2>
+            <p>
+                We serve delicious Indian, Chinese, and Continental dishes made with fresh ingredients.
+                Our mission is to provide tasty food and excellent customer service.
+            </p>
+        </section>
+
+
+        <section id="services">
+            <h2>Our Services</h2>
+            <a href="Login.html">
+               <button class="services">Dine-In</button>
+            </a>
+            <a href="Login.html">
+                <button class="services">Takeaway</button>
+            </a>
+
+            <br><br>
+            <h4>Available ON</h4>
+            <a href="https://www.swiggy.com/">
+                <button class="services logo-button">
+                    <img src="photos/swiggy-logo.png" alt="Swiggy" class="brand-logo1">
+                </button>
+            </a>
+            <a href="https://www.zomato.com/">
+                <button class="services logo-button">
+                    <img src="photos/zomato-logo1.png" alt="Zomato" class="brand-logo2">
+                </button>
+            </a>
+            <p>Check out our latest menu items and special offers!</p>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <p><strong>📍 Address:</strong> Beside Khursheed,Mandi Bazar, Warangal, Telangana, India</p>
+            <p><strong>📞 Phone:</strong> +91 9876543210</p>
+            <p><strong>✉ Email:</strong>biryanimahal11@gmail.com</p>
+        </section>
+
+        <footer class="footer">
+            <div class="footer1">
+                © 2026 Biryani Mahal | All Rights Reserved
+            </div>
+            <div class="tooltip-text">
+                hello.
+            </div>
+        </footer>
+
+    </body>
+
+    <script>
+
+        alert("Welcome to Biryani Mahal! Enjoy our delicious menu and have a great dining experience!");
+        buttons = document.querySelectorAll("button");
+
+    </script>
+</html>

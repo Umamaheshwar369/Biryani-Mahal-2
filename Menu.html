@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <title>Biryani Mahal Menu </title>
+    </head>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        @font-face {
+            font-family: 'MyCustomFont';
+            src: url('assets/fonts/Dhurjati-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'MyCustomFont1';
+            src: url('assets/fonts/NotoSerifDisplay-Bold.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body{
+            background:#fcdcac;
+            color:#000000;
+            font-family: "MyCustomFont1", serif;
+        }
+
+        header{
+            font-family: "MyCustomFont", sans-serif;
+            font-size: 30px;
+            letter-spacing: 4px;
+            font-weight: bold;
+            background:#F2A900;
+            color:#8A0000;
+            text-align:center;
+            padding:20px;
+        }
+
+        nav{
+            background:#FFCB56;
+            padding:15px;
+            text-align:center;
+        }
+
+        nav a{
+            color:#8A0000;
+            text-decoration:none;
+            margin:15px;
+            font-weight:bold;
+            transition:0.5s;
+        }
+
+        nav a:hover{
+            transform:scale(1.05);
+            color:#FFFFFF;
+        }
+
+        .hero {
+            width: 100%;
+            min-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+            background-image: url("photos/unsplash.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            color: #fcdcac;
+            text-shadow: 2px 2px 6px black;
+            font-size: 40px;
+            font-weight: bold;
+
+            transition: 0.5s;
+        }
+
+        .hero:hover {
+            transform: scale(1.05);
+        }
+
+        .hero:active{
+            transform:scale(1.025);
+        }
+
+        .hero-content {
+            text-shadow: #333 1px 1px 2px;
+            padding: 30px 40px;
+            border-radius: 15px;
+        }
+
+        .hero-content p {
+            font-size: 22px;
+            font-weight: normal;
+            margin-top: 10px;
+        }
+
+        section{
+            width:85%;
+            height:10%;
+            margin: auto;
+            margin-top: 50px;
+            margin-bottom: 75px;
+            background:#F2A900;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 0 10px gray;
+
+            transition: 0.5s;
+        }
+
+        section:hover{
+            transform:scale(1.05);
+
+        }
+
+
+        h2{
+            color:#8A0000;
+            margin-bottom:15px;
+        }
+
+        .item{
+            margin-right: 600px;
+        }
+
+        .label2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            padding: 8px 0;
+            width: 80%;
+        }
+
+        .label1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            padding: 8px 0;
+            width: 100%;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            width: 100%;
+        }
+
+        .item-name {
+            flex: 1;
+        }
+
+        .item-price {
+            width: 90px;
+            text-align: right;
+            margin-right: 25px;
+        }
+
+        .quantity-header {
+            width: 100px;
+            text-align: center;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 100px;
+        }
+
+        .qty-btn {
+            background-color: #8b0000;
+            color: #ffffff;
+            padding: 0px;
+            border: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 18px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .qty-btn:hover {
+            background-color: #a00000;
+        }
+
+        .qty-count {
+            font-weight: bold;
+            padding-bottom: 2px;
+            font-size: 20px;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        button{
+            background:#8A0000;
+            color:white;
+            border:none;
+            padding:10px 20px;
+            border-radius:5px;
+            cursor:pointer;
+
+            transition:background-color 0.5s, transform 0.5s;
+        }
+
+        button:hover{
+            color:#FFFFFF;
+            background:#A52A2A;
+            transform:scale(1.1);
+        }
+
+        button:active{
+            transform:scale(0.9);
+            background:#F2A900;
+        }
+
+        .bill-container {
+            background-color: #fcdcac;
+            border: 2px dashed #8b0000;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            max-width: 600px;
+        }
+
+        .bill-container h3 {
+            color: #8b0000;
+            margin-top: 0;
+        }
+
+        .empty-cart {
+            color: #666;
+            font-style: italic;
+        }
+
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 15px;
+        }
+
+        .bill-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            color: #8b0000;
+            margin-top: 10px;
+        }
+
+        .checkout-btn {
+            background-color: #8A0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .checkout-btn:hover {
+            background-color: #218838;
+        }
+
+        .footer{
+            position:relative;
+            background:#2A1A0E;
+            color:white;
+            text-align:center;
+            padding:20px;
+            margin-top:30px;
+            display:flex;
+            cursor:pointer;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .footer:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+    </style>
+    <body>
+
+        <header>
+            <h1>🍽 బిర్యానీ మహల్ 🍽</h1>
+            <p> Telangana HYD | Spicy & Fresh | Modern Service</p>
+        </header>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#menu">Menu</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>Biryani Mahal</h1>
+                <h3>Menu</h3>
+            </div>
+        </section>
+
+        <section id="about">
+            <h2>About Us</h2>
+            <p>
+                We serve delicious Indian, Chinese, and Continental dishes made with fresh ingredients.
+                Our mission is to provide tasty food and excellent customer service.
+            </p>
+        </section>
+
+        <section id="menu">
+            <h2>Our Menu</h2>
+
+  
+            <div class="label1">
+                <span class="item-name">Items</span>
+                <span class="item-price">Price</span>
+                <span class="quantity-header">Quantity</span>
+            </div>
+            <hr>
+
+            <div class="label1">
+                <span class="item-name">Main Courses</span>
+                <span style="width:25px;"></span>
+            </div>
+            <hr>
+
+            <div class="menu-item" data-id="egg-manchria" data-price="139">
+                <span class="item-name">Egg Manchuria / Chilli Egg 4 eggs (8 pieces)</span>
+                <span class="item-price">₹139</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+                
+            <div class="menu-item" data-id="chickenmejestic" data-price="189">
+                <span class="item-name">Chicken mejestic 8pi.</span>
+                <span class="item-price">₹189</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="chickenpakoda" data-price="229">
+                <span class="item-name">Chicken Pakada 6pi.</span>
+                <span class="item-price">₹229</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+
+            <div class="menu-item" data-id="chicken65" data-price="249">
+                <span class="item-name">Chicken 65 6pi.</span>
+                <span class="item-price">₹249</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="fishpakoda" data-price="299">
+                <span class="item-name">Fish Pakoda 8pi.</span>
+                <span class="item-price">₹299</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+                <br>
+            
+            <div class="label1">
+                <span class="item-name">Main Courses</span>
+                <span style="width:25px;"></span>
+            </div>
+            <hr>
+
+            <div class="menu-item" data-id="hdychickendumSINGLE" data-price="199">
+                <span class="item-name">Hyderabadi Chicken Dum Biryani (Single)</span>
+                <span class="item-price">₹199</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="hydchickendumFAMILY" data-price="999">
+                <span class="item-name">Hyderabadi Chicken Dum Biryani (Family)</span>
+                <span class="item-price">₹999</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="hydmuttondumSINGLE" data-price="249">
+                <span class="item-name">Hyderabadi Mutton Dum Biryani (Single)</span>
+                <span class="item-price">₹249</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+             <div class="menu-item" data-id="hydMUTTONdumFAMILY" data-price="1199">
+                <span class="item-name">Hyderabadi Mutton Dum Biryani (Family)</span>
+                <span class="item-price">₹1199</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            
+            <div class="menu-item" data-id="hydmuttonkeemaMASALA" data-price="249">
+                <span class="item-name">Hyderabadi Mutton Keema Masala</span>
+                <span class="item-price">₹249</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+
+            <div class="menu-item" data-id="hydvegdumSINGLE" data-price="179">
+                <span class="item-name">Hyderabadi Veg Dum Biryani (Single)</span>
+                <span class="item-price">₹179</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="hydvegdumFAMILY" data-price="899">
+                <span class="item-name">Hyderabadi Veg Dum Biryani (Family)</span>
+                <span class="item-price">₹899</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="hydeggdumSINGLE" data-price="189">
+                <span class="item-name">Egg Dum Biryani (Single)</span>
+                <span class="item-price">₹189</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="eggdunFAMILY" data-price="949">
+                <span class="item-name">Egg Dum Biryani (Family)</span>
+                <span class="item-price">₹949</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <br>
+
+
+            <div class="label2">
+                <span class="item-name">Rice & Curries</span>
+            </div>
+            <hr>
+
+            <div class="menu-item" data-id="bagararice" data-price="129">
+                <span class="item-name">Bagara Rice</span>
+                <span class="item-price">₹129</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            
+            <div class="menu-item" data-id="plainrice" data-price="119">
+                <span class="item-name">Plain Rice</span>
+                <span class="item-price">₹119</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            
+            <div class="menu-item" data-id="royyalapulusu" data-price="349">
+                <span class="item-name">Hyderabadi Mutton Keema Masala</span>
+                <span class="item-price">₹349</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            
+            <div class="menu-item" data-id="gonguramutton" data-price="379">
+                <span class="item-name">Gongura Mutton 300G</span>
+                <span class="item-price">₹379</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="gongurachicken" data-price="279">
+                <span class="item-name">Gongura Chicken 300G</span>
+                <span class="item-price">₹279</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="natukodipulusu" data-price="249">
+                <span class="item-name">NatuKodi Pulusu(Country Chicken Curry) 300G</span>
+                <span class="item-price">₹249</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+            
+            <div class="menu-item" data-id="guttivankayakoora" data-price="189">
+                <span class="item-name">Gutti Vankaya Koora(Stuffed Brinja Curry) 300G</span>
+                <span class="item-price">₹189</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="gongurapappu" data-price="149">
+                <span class="item-name">Gongura Pappu(Sorrel Leaf Dal) 300G</span>
+                <span class="item-price">₹149</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="paneerbuttermasala" data-price="249">
+                <span class="item-name">Paneer Butter Masala</span>
+                <span class="item-price">₹249</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+            <br>
+
+            <div class="label2">
+                <span class="item-name">Desserts</span>
+            </div>
+            <hr>
+
+            <div class="menu-item" data-id="doublekameetha" data-price="49">
+                <span class="item-name">Double Ka Meetha 150G</span>
+                <span class="item-price">₹49</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+            
+            <div class="menu-item" data-id="sheerkhurma" data-price="99">
+                <span class="item-name">Sheer Khurma 150ML</span>
+                <span class="item-price">₹99</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="gulabjamun" data-price="99">
+                <span class="item-name">Gulab Jamun 4pi.</span>
+                <span class="item-price">₹99</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <div class="menu-item" data-id="Icecream" data-price="99">
+                <span class="item-name">Ice Cream 150ML</span>
+                <span class="item-price">₹99</span>
+    
+    
+                <div class="quantity-control">
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,-1)">-</button>
+                    <span class="qty-count">0</span>
+                    <button type="button" class="qty-btn" onclick="updateQuantity(this,+1)">+</button>
+                </div>
+            </div>
+
+            <br>
+
+            <section id="bill-section" class="bill-container">
+                <h3>Your Order Summary</h3>
+
+                <div id="customer-details" class="customer-info-card">
+                    <p><strong>Customer:</strong> <span id="summary-username">Loading...</span></p>
+                    <p><strong>Table No:</strong> <span id="summary-table">Loading...</span></p>
+                    <p><strong>Phone:</strong> <span id="summary-phone">Loading...</span></p>
+                    <p><strong>Order Type:</strong> <span id="summary-ordertype">Loading...</span></p>
+                </div>
+                <hr>
+
+
+                <h4>Selected Items</h4>
+                <div id="bill-items">
+                    <p class="empty-cart">No items selected yet.</p>
+                </div>
+                <hr>
+                <div class="bill-total">
+                    <span>Grand Total:</span>
+                    <span id="grand-total">₹0</span>
+                </div>
+                <button type="button" class="checkout-btn" onclick="placeOrder()">Place Order</button>
+            </section>
+
+        </section>
+
+        <section id="contact">
+            <h2>Contact Us</h2>
+
+            <p><strong>📍 Address:</strong> Beside Khursheed,Mandi Bazar, Warangal, Telangana, India</p>
+
+            <p><strong>📞 Phone:</strong> +91 9876543210</p>
+
+            <p><strong>✉ Email:</strong>deliciousrestaurant11@gmail.com</p>
+
+        </section>
+
+        <footer class="footer">
+            <div class="footer1">
+                © 2026 Delicious Restaurant | All Rights Reserved
+            </div>
+            <div class="tooltip-text">
+                hello.
+            </div>
+        </footer>
+
+    </body>
+    <script>
+        // Initialize Supabase client
+        const SUPABASE_URL = "https://ysxxjfhbxjitqcxrryjf.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzeHhqZmhieGppdHFjeHJyeWpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0Mjc4MDMsImV4cCI6MjEwODAwMzgwM30.iC-qYh-nRPUZWtl7U8oQsLjZbs9kgJmHi0WXUqDVEGc";
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const cart = {};
+
+        // Load customer data into summary card on page load
+        window.addEventListener('DOMContentLoaded', () => {
+        const customerInfo = JSON.parse(sessionStorage.getItem('customerInfo'));
+        
+            if (customerInfo) {
+                document.getElementById('summary-username').textContent = customerInfo.username || 'N/A';
+                document.getElementById('summary-table').textContent = customerInfo.table_no || 'N/A';
+                document.getElementById('summary-phone').textContent = customerInfo.phone_no || 'N/A';
+                document.getElementById('summary-ordertype').textContent = customerInfo.order_type || 'N/A';
+            }
+            else {
+                alert("No active session found. Please log in first.");
+                window.location.href = 'index.html';
+            }
+        
+            renderBill();
+        });
+
+        function updateQuantity(button, change) {
+            const menuItem = button.closest('.menu-item');
+            const itemId = menuItem.getAttribute('data-id');
+            const itemName = menuItem.querySelector('.item-name').textContent;
+            const itemPrice = parseFloat(menuItem.getAttribute('data-price'));
+ 
+            const qtySpan = menuItem.querySelector('.qty-count');
+            let currentQty = parseInt(qtySpan.textContent) || 0;
+ 
+            let newQty = currentQty + change;
+            if (newQty < 0) newQty = 0;
+ 
+                qtySpan.textContent = newQty;
+ 
+                if (newQty > 0) {
+                    cart[itemId] = {
+                    name: itemName,
+                    price: itemPrice,
+                    quantity: newQty
+                };
+            }
+            else {
+                delete cart[itemId];
+            }
+            renderBill();
+        }
+
+        function renderBill() {
+            const billItemsContainer = document.getElementById('bill-items');
+            const grandTotalSpan = document.getElementById('grand-total');
+        
+            billItemsContainer.innerHTML = '';
+            const itemIds = Object.keys(cart);
+ 
+            if (itemIds.length === 0) {
+                billItemsContainer.innerHTML = '<p class="empty-cart">No items selected yet.</p>';
+                grandTotalSpan.textContent = '₹0';
+                return;
+            }
+ 
+            let grandTotal = 0;
+ 
+            itemIds.forEach(id => {
+                const item = cart[id];
+                const itemTotal = item.price * item.quantity;
+                grandTotal += itemTotal;
+    
+                const row = document.createElement('div');
+                row.className = 'bill-row';
+                row.innerHTML = `
+                    <span>${item.name} (x${item.quantity})</span>
+                    <span>₹${itemTotal}</span>
+                `;
+                billItemsContainer.appendChild(row);
+            });
+ 
+            grandTotalSpan.textContent = `₹${grandTotal}`;
+        }
+
+        async function placeOrder() {
+            if (Object.keys(cart).length === 0) {
+                alert("Please select at least one item before placing an order!");
+                return;
+            }
+
+            const customerInfo = JSON.parse(sessionStorage.getItem('customerInfo'));
+            if (!customerInfo) {
+                alert("Session expired. Please log in again.");
+                window.location.href = 'index.html'; 
+                return;
+            }
+
+            let grandTotal = 0;
+            Object.values(cart).forEach(item => {
+                grandTotal += item.price * item.quantity;
+            });
+
+            const now = new Date();
+            const currentDate = now.toISOString().split('T')[0];
+            const currentTimestamp = now.toISOString();
+
+            const newOrder = {
+                username: customerInfo.username,
+                table_no: customerInfo.table_no,
+                phone_no: customerInfo.phone_no,
+                order_type: customerInfo.order_type,
+                items: cart,
+                total_amount: grandTotal,
+                status: 'Pending',
+                date: now.toLocaleDateString(),
+                time_stamp: now.toISOString()
+            };
+
+            const { error } = await db
+                .from('Biryani Mahal')
+                .insert([newOrder]);
+
+                if (error) {
+                    console.error('Error inserting order:', error);
+                    alert('Failed to place order. Error: ' + error.message);
+                }
+                else {
+                    alert('Order Taken Successfully! Kitchen has received your order.');
+                    sessionStorage.removeItem('cart');
+                    // DO NOT remove customerInfo here, otherwise the status page won't know who is logged in!
+                    window.location.href = 'C.html'; 
+                }
+        
+        }
+    
+    </script>
+
+</html>

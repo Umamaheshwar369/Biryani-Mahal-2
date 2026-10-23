@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <title>Biryani Mahal Customer Status</title>
+    </head>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        @font-face {
+            font-family: 'MyCustomFont';
+            src: url('assets/fonts/Dhurjati-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'MyCustomFont1';
+            src: url('assets/fonts/NotoSerifDisplay-Bold.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body{
+            background:#fcdcac;
+            color:#000000;
+            font-family: "MyCustomFont1", serif; 
+        }
+
+        header{
+            font-family: "MyCustomFont", sans-serif;
+            font-size: 30px;
+            letter-spacing: 4px;
+            font-weight: bold;
+            background:#F2A900;
+            color:#8A0000;
+            text-align:center;
+            padding:20px;
+        }
+
+        
+        section{
+            width:30%;
+            height:10%;
+            margin: auto;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            background:#F2A900;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 0 10px gray;
+
+
+            transition: 0.5s;
+        }
+
+        section:hover{
+            transform:scale(1.05);
+        }
+
+        section:active{
+            transform:scale(1.025);
+        }
+
+
+            .status-container h3 {
+                color: #8A0000;
+                border-bottom: 2px solid #8A0000;
+                padding-bottom: 8px;
+                margin-bottom: 15px;
+            }
+
+            .info-group {
+                margin: 12px 0;
+                font-size: 15px;
+            }
+
+            .info-group span {
+                font-weight: bold;
+                color: #333;
+            }
+
+            .status-badge {
+                display: inline-block;
+                padding: 5px 12px;
+                border-radius: 15px;
+                font-weight: bold;
+                color: white;
+                font-size: 14px;
+            }
+
+            .status-pending { background-color: #e74c3c; }   /* Red */
+            .status-preparing { background-color: #f39c12; } /* Orange */
+            .status-completed { background-color: #27ae60; } /* Green */
+
+            .items-box {
+                margin-top: 20px;
+                background: #fff8eb;
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid #f2a900;
+            }
+
+            .items-box ul {
+                list-style-type: none;
+                padding-left: 0;
+                margin-top: 8px;
+            }
+
+            .items-box li {
+                padding: 4px 0;
+                border-bottom: 1px dashed #ddd;
+                font-size: 14px;
+            }
+
+            .total-box {
+                margin-top: 20px;
+                font-size: 18px;
+                font-weight: bold;
+                color: #8A0000;
+                text-align: right;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+        <div class="header">
+            <h1>🍽 బిర్యానీ మహల్ 🍽</h1>
+            <p>Live Order Status Tracker</p>
+        </div>
+        </header>
+        <section>
+            
+                <h3>Your Order Details</h3>
+            
+                <div class="info-group">Customer Name: <span id="summary-username">Loading...</span></div>
+                <div class="info-group">Table No: <span id="summary-table">Loading...</span></div>
+                <div class="info-group">Phone No: <span id="summary-phone">Loading...</span></div>
+                <div class="info-group">Order Type: <span id="summary-ordertype">Loading...</span></div>
+                <div class="info-group">Date: <span id="summary-date">Loading...</span></div>
+                <div class="info-group">Time: <span id="summary-time">Loading...</span></div>
+                <div class="info-group">Live Status: <span id="summary-status" class="status-badge status-pending">Loading...</span></div>
+
+                <div class="items-box">
+                    <strong>Items Ordered:</strong>
+                    <ul id="summary-items">
+                        <li>Loading items...</li>
+                    </ul>
+                </div>
+
+                <div class="total-box">
+                    Total Amount: ₹<span id="summary-total">0</span>
+                </div>
+            
+        </section>
+        <script>
+            // Initialize Supabase Client
+            const SUPABASE_URL = "https://ysxxjfhbxjitqcxrryjf.supabase.co";
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzeHhqZmhieGppdHFjeHJyeWpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0Mjc4MDMsImV4cCI6MjEwODAwMzgwM30.iC-qYh-nRPUZWtl7U8oQsLjZbs9kgJmHi0WXUqDVEGc";
+            const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            window.addEventListener('DOMContentLoaded', async () => {
+                // Get customer info stored during login/checkout session
+                const customerInfo = JSON.parse(sessionStorage.getItem('customerInfo'));
+
+                if (!customerInfo || !customerInfo.username) {
+                    alert("No active customer session found. Please login first.");
+                    window.location.href = "index.html"; // Adjust to your login page filename
+                    return;
+                }
+
+                // Fill basic session details immediately
+                document.getElementById('summary-username').textContent = customerInfo.username;
+                document.getElementById('summary-table').textContent = customerInfo.table_no || 'N/A';
+                document.getElementById('summary-phone').textContent = customerInfo.phone_no || 'N/A';
+                document.getElementById('summary-ordertype').textContent = customerInfo.order_type || 'N/A';
+
+                // Fetch the latest order from Supabase for this customer
+                await fetchCustomerOrder(customerInfo.username);
+            });
+
+            async function fetchCustomerOrder(username) {
+                const { data, error } = await db
+                    .from('Biryani Mahal')
+                    .select('*')
+                    .eq('username', username)
+                    .order('time_stamp', { ascending: false })
+                    .limit(1);
+
+                if (error) {
+                    console.error("Error fetching status:", error);
+                    document.getElementById('summary-status').textContent = "Error loading status";
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    document.getElementById('summary-status').textContent = "No order found";
+                    document.getElementById('summary-items').innerHTML = "<li>No items found.</li>";
+                    return;
+                }
+
+                const order = data[0];
+
+                // Format Date & Time accurately using same logic as Admin Panel
+                document.getElementById('summary-date').textContent = order.date ? new Date(order.date).toLocaleDateString() : 'N/A';
+                document.getElementById('summary-time').textContent = order.time_stamp ? new Date(order.time_stamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+
+                // Handle Status Badge & Color
+                const statusSpan = document.getElementById('summary-status');
+                const orderStatus = order.status || 'Pending';
+                statusSpan.textContent = orderStatus;
+
+                let badgeClass = 'status-pending';
+                if (orderStatus === 'Preparing') badgeClass = 'status-preparing';
+                if (orderStatus === 'Completed') badgeClass = 'status-completed';
+                statusSpan.className = `status-badge ${badgeClass}`;
+
+                // Render Items List
+                const itemsListContainer = document.getElementById('summary-items');
+                if (order.items && typeof order.items === 'object') {
+                    const itemEntries = Object.values(order.items);
+                    if (itemEntries.length > 0) {
+                        itemsListContainer.innerHTML = itemEntries.map(item => `
+                            <li>• ${item.name} <b>(x${item.quantity})</b> - ₹${item.price * item.quantity}</li>
+                        `).join('');
+                    } else {
+                        itemsListContainer.innerHTML = "<li>No items ordered.</li>";
+                    }
+                } else {
+                    itemsListContainer.innerHTML = "<li>No item breakdown available.</li>";
+                }
+
+                // Render Total Amount
+                document.getElementById('summary-total').textContent = order.total_amount || 0;
+            }
+
+            // Realtime update listener: Automatically updates customer status if the admin changes it!
+            db.channel('customer-status-changes')
+                .on('postgres_changes', 
+                    { event: 'UPDATE', schema: 'public', table: 'Biryani Mahal' }, 
+                    payload => {
+                        const customerInfo = JSON.parse(sessionStorage.getItem('customerInfo'));
+                        if (customerInfo && payload.new.username === customerInfo.username) {
+                            fetchCustomerOrder(customerInfo.username); // Refresh live status instantly
+                        }
+                    }
+                )
+                .subscribe();
+        </script>
+        
+    </body>
+</html>

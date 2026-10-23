@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Biryani Mahal - Admin Dashboard</title>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <style>
+            body {
+                font-size: 16px;
+                font-family: Arial, sans-serif;
+                background-color: #fcdcac;
+                margin: 50px;
+                padding: 4px;
+            }
+        
+            .header {
+                text-align: center;
+                color: #8A0000;
+                margin-bottom: 20px;
+            }
+
+            .dashboard-container {
+                max-width:1500;
+                margin: 0 auto;
+                background: #fff;
+                padding: 2px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+            table {
+                width: auto;
+                border-collapse: collapse;
+            }
+
+            th, td {
+                padding: 8px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+                vertical-align: middle;
+            }
+
+            th:nth-child(7), td:nth-child(7) {
+                text-align: left;
+                min-width: 240px; 
+                word-break: normal;
+                overflow-wrap: break-word;
+                line-height: 1.5;
+            }
+
+            tr:hover {
+                background-color: #fff8eb;
+            }
+
+            .live-badge {
+                display: inline-block;
+                background-color: #28a745;
+                color: white;
+                padding: 4px 8px;
+                border-radius: 12px;
+                font-size: 12px;
+                margin-left: 10px;
+            }
+
+            /* Modal Overlay Background */
+            .modal-overlay {
+                display: none; /* Hidden by default */
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+
+            /* Modal Box Container */
+            .modal-card {
+                background: #fff;
+                padding: 25px;
+                border-radius: 8px;
+                width: 90%;
+                max-width: 350px;
+                text-align: center;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            }
+
+            .modal-buttons {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                margin: 20px 0 10px 0;
+            }
+
+            .modal-buttons button {
+                flex: 1;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                font-weight: bold;
+                cursor: pointer;
+                color: white;
+            }
+
+            .btn-preparing { background-color: #f39c12; } /* Orange */
+            .btn-completed { background-color: #27ae60; } /* Green */
+
+            .btn-close {
+                background: #e74c3c;
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-top: 5px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div class="header">
+            <h1>Biryani Mahal Admin Panel <span class="live-badge">LIVE</span></h1>
+            <p>Real-time Customer Orders & Activity</p>
+        </div>
+
+        <div class="dashboard-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Customer Name</th>
+                        <th>Table No</th>
+                        <th>Phone No</th>
+                        <th>Order Type</th>
+                        <th>Items Ordered</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Status Update Modal -->
+        <div id="statusModal" class="modal-overlay">
+            <div class="modal-card">
+                <h3>Update Order Status</h3>
+                <p id="modalOrderDetails" style="margin: 10px 0; color: #555; font-size: 14px;"></p>
+                
+                <div class="modal-buttons">
+                    <button class="btn-preparing" onclick="updateStatus('Preparing')">Preparing</button>
+                    <button class="btn-completed" onclick="updateStatus('Completed')">Completed</button>
+                </div>
+        
+                <button class="btn-close" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+
+        <script>
+            // Initialize Supabase Client
+            const SUPABASE_URL = "https://ysxxjfhbxjitqcxrryjf.supabase.co";
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzeHhqZmhieGppdHFjeHJyeWpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0Mjc4MDMsImV4cCI6MjEwODAwMzgwM30.iC-qYh-nRPUZWtl7U8oQsLjZbs9kgJmHi0WXUqDVEGc";
+            const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            const ordersBody = document.getElementById("ordersBody");
+            let currentSelectedOrderId = null;
+
+            // 1. Fetch live orders from 'Biryani Mahal' table
+            async function fetchOrders() {
+                const { data, error } = await db
+                    .from('Biryani Mahal')
+                    .select('*');
+
+                if (error) {
+                    console.error("Admin Fetch Error:", error);
+                    ordersBody.innerHTML = `<tr><td colspan='9'>Error loading orders: ${error.message}</td></tr>`;
+                    return;
+                }
+
+                // Display newest orders first
+                const latestFirst = data ? [...data].reverse() : [];
+                renderOrders(latestFirst);
+            }
+
+            // 2. Render order rows in HTML
+            function renderOrders(orders) {
+                if (!orders || orders.length === 0) {
+                    ordersBody.innerHTML = "<tr><td colspan='9'>No orders placed yet.</td></tr>";
+                    return;
+                }
+
+                ordersBody.innerHTML = orders.map(order => {
+                    // Format ordered items into readable string
+                    let itemsList = "No items";
+                    if (order.items && typeof order.items === 'object') {
+                        const itemDetails = Object.values(order.items).map(item => `${item.name} (x${item.quantity})`);
+                        if (itemDetails.length > 0) {
+                            itemsList = itemDetails.join(", ");
+                        }
+                    }
+
+                    const orderDate = order.date ? new Date(order.date).toLocaleDateString() : 'N/A';
+                    const orderTime = order.time_stamp ? new Date(order.time_stamp).toLocaleTimeString() : 'N/A';
+
+                    // Badge styling for status column
+                    let statusColor = order.status === 'Completed' ? 'green' : (order.status === 'Preparing' ? 'orange' : 'red');
+
+                    return `
+                        <tr onclick="openModal('${order.id}', '${order.username}', '${order.table_no}')" style="cursor: pointer;" title="Click to update status">
+                            <td>${orderDate}</td>
+                            <td>${orderTime}</td>
+                            <td><b>${order.username || 'N/A'}</b></td>
+                            <td>${order.table_no || 'N/A'}</td>
+                            <td>${order.phone_no || 'N/A'}</td>
+                            <td>${order.order_type || 'N/A'}</td>
+                            <td>${itemsList}</td>
+                            <td><b>₹${order.total_amount || 0}</b></td>
+                            <td><span style="color: ${statusColor}; font-weight: bold;">${order.status || 'Pending'}</span></td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            // 3. Open Modal when a row is clicked
+            function openModal(orderId, username, tableNo) {
+                currentSelectedOrderId = orderId;
+                document.getElementById("modalOrderDetails").innerHTML = `Update status for <b>${username}</b> (Table: ${tableNo})`;
+                document.getElementById("statusModal").style.display = "flex";
+            }
+
+            // 4. Close Modal
+            function closeModal() {
+                currentSelectedOrderId = null;
+                document.getElementById("statusModal").style.display = "none";
+            }
+
+            // 5. Update Status in Supabase database
+            async function updateStatus(newStatus) {
+                if (!currentSelectedOrderId) return;
+
+                const { error } = await db
+                    .from('Biryani Mahal')
+                    .update({ status: newStatus })
+                    .eq('id', currentSelectedOrderId);
+
+                if (error) {
+                    alert("Failed to update status: " + error.message);
+                } else {
+                    closeModal();
+                    fetchOrders(); // Refresh table immediately
+                }
+            } 
+
+            // 6. Real-Time Listener for incoming orders & updates
+            db
+                .channel('schema-db-changes')
+                .on('postgres_changes', 
+                    { event: '*', schema: 'public', table: 'Biryani Mahal' }, 
+                    payload => {
+                        fetchOrders(); // Reload orders instantly on any change/insert
+                    }
+                )
+                .subscribe();
+
+            // Run on page load
+            window.onload = fetchOrders;
+        </script>
+    </body>
+</html>
