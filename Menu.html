@@ -879,7 +879,7 @@
                 items: cart,
                 total_amount: grandTotal,
                 status: 'Pending',
-                date: now.toLocaleDateString(),
+                date: now.toISOString().split('T')[0],
                 time_stamp: now.toISOString()
             };
 
